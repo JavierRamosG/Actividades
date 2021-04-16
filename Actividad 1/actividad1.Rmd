@@ -1,0 +1,102 @@
+---
+title: "Actividad 1 - Javier Ramos"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Actividad Ayudantia 2
+  Replicar lo realizado en la ayudantia (analisis exploratorio de los datos, limpieza, sub dataframes, filtro y graficar ), pueden elegir otro equipo para que puedan explorar otros datos
+
+
+## Analisis Exploratorio de Datos 
+
+```{r cargar datos}
+library(quanteda)
+library(dplyr)
+library(tidyverse)
+library(utf8)
+library(ggplot2)
+setwd("D:/UAI/2021 - 1/Minería de datos/Actividades/Actividad 1")
+primer_tiempo2020 <- read_csv("Primer_Tiempo2020.csv", col_names = TRUE)
+#str(primer_tiempo2020)
+#attach(primer_tiempo2020)
+summary(primer_tiempo2020)
+```
+
+## Borrar Datos Char
+```{r}
+primer_tiempo2020 <- primer_tiempo2020[,!(colnames(primer_tiempo2020) %in% c("id_partido", "fasepartido", "local", "tiempo","formationUsed", "torneo"))]
+```
+
+## Analisis descriptivo
+
+```{r}
+#Ordenamiento por cantidad de goles por partido de mayor a menor
+fh2020 <- primer_tiempo2020[order(primer_tiempo2020$goals, decreasing = TRUE),]
+fh2020
+
+#Promedio de goles
+mean_goles <- mean(primer_tiempo2020$goals)
+mean_goles
+
+#Des. Estadar de goles
+std_dev_goles <- sd(primer_tiempo2020$goals)
+std_dev_goles
+
+#Mediana de goles
+median_goles <- median(primer_tiempo2020$goals)
+median_goles
+
+#Maximo de goles
+max_goles <- max(primer_tiempo2020$goals)
+max_goles
+```
+## Sub DataFrames
+
+```{r}
+#Sub DF de goles
+fh2020_goles = fh2020[,colnames(primer_tiempo2020) %in% c("equipo", "partido", "goals", "goalAssist")]
+fh2020_goles = fh2020_goles[order(fh2020_goles$goals, decreasing = TRUE),]
+fh2020_goles
+
+#Sub DF de estadisticas generales
+fh2020_estadis = fh2020[,colnames(primer_tiempo2020) %in% c("equipo", "partido", "possessionPercentage", "precision_pases", "precision_tiros")]
+fh2020_estadis = fh2020_estadis[order(fh2020_estadis$precision_tiros, decreasing = TRUE),]
+fh2020_estadis
+```
+
+## Filtrar Datos
+```{r}
+d_iqq <- filter(primer_tiempo2020, equipo == "Deportes Iquique")
+iqq_goles <- filter(fh2020_goles, equipo == "Deportes Iquique")
+iqq_estadis <- filter(fh2020_estadis, equipo == "Deportes Iquique")
+```
+
+## Agregar Promedio/Suma Total/Min/...
+```{r}
+#Calculo promedio de goles
+iqq_goles <- iqq_goles[,!(colnames(iqq_goles) %in% c("equipo"))] 
+Promedios_goles <- c("Promedio Goles",mean(iqq_goles$goals),mean(iqq_goles$goalAssist))
+iqq_goles <- rbind(iqq_goles, Promedios_goles)
+
+#Calculo maximo de goles
+Max_goles <- c("Max Goles",max(iqq_goles$goals),max(iqq_goles$goalAssist))
+iqq_goles <- rbind(iqq_goles, Max_goles)
+
+#Calculo minimo de goles
+Min_goles <- c("Min Pases",min(iqq_goles$goals),min(iqq_goles$goalAssist))
+iqq_goles <- rbind(iqq_goles, Min_goles)
+iqq_goles
+```
+
+## Graficos
+```{r}
+#Gráficos
+dotchart(iqq_estadis$precision_pases, labels = utf8_encode(iqq_estadis$partido), cex=0.5, xlab = "% Precisión Pases", ylab = "Partido")
+dotchart(iqq_estadis$precision_tiros, labels = utf8_encode(iqq_estadis$partido), cex=0.5, xlab = "% Precisión Tiros", ylab = "Partido")
+dotchart(iqq_estadis$possessionPercentage, labels = utf8_encode(iqq_estadis$partido), cex=0.5, xlab = "% Posesión", ylab = "Partido")
+```
+
