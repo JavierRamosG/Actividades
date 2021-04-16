@@ -1,0 +1,102 @@
+---
+title: "Actividad 2 - Javier Ramos"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Actividad Ayudantia 3
+  Replicar el analisis de outliers, debes elegir uno de los dos csv disponibles (pokemon o titanic) y realizar el analisis con algunas     de las variables numericas y realizar un pequeño analisis en relacion a los datos encontrados como outliers (en caso de que eligas     el csv del titanic solo debes evaluar las columnas AGE y FNLWGT)
+
+
+## Outliers
+```{r cargar y revisar datos}
+library(quanteda)
+library(dplyr)
+library(tidyverse)
+library(utf8)
+library(ggplot2)
+setwd("D:/UAI/2021 - 1/Minería de datos/Actividades/Actividad 2")
+titanic <- read_csv("titanic.csv", col_names = TRUE)
+
+```
+
+## Análisis variable AGE
+```{r analisis age}
+hist(titanic$AGE)
+boxplot(titanic$AGE, horizontal = TRUE)
+boxplot.stats(titanic$AGE)
+```
+```{r age primera limpieza}
+attach(titanic)
+titanic1 <- AGE[AGE < 79]
+boxplot(titanic1, horizontal = TRUE)
+boxplot.stats(titanic1)
+```
+```{r age segunda limpieza}
+titanic2 <- AGE[AGE < 76]
+boxplot(titanic2, horizontal = TRUE)
+boxplot.stats(titanic2)
+
+```
+
+## Outliers de AGE
+```{r}
+out <- filter(titanic, titanic$AGE > 75)
+out
+```
+
+
+## Análisis variable FNLWGT
+```{r analisis fnl}
+hist(titanic$FNLWGT)
+boxplot(titanic$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic$FNLWGT)
+```
+
+```{r fnl primera limpieza}
+attach(titanic)
+titanic3 <- filter(titanic, FNLWGT < min(boxplot.stats(FNLWGT)$out))
+boxplot(titanic3$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic3$FNLWGT)
+```
+
+```{r fnl segunda limpieza}
+titanic4 <- filter(titanic3, FNLWGT < min(boxplot.stats(FNLWGT)$out))
+boxplot(titanic4$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic4$FNLWGT)
+```
+
+```{r fnl tercera limpieza}
+titanic5 <- filter(titanic4, FNLWGT < min(boxplot.stats(FNLWGT)$out))
+boxplot(titanic5$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic5$FNLWGT)
+```
+
+```{r fnl cuarta limpieza}
+titanic6 <- filter(titanic5, FNLWGT < min(boxplot.stats(FNLWGT)$out))
+boxplot(titanic5$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic6$FNLWGT)
+```
+
+```{r fnl quinta limpieza}
+titanic7 <- filter(titanic6, FNLWGT < min(boxplot.stats(FNLWGT)$out))
+boxplot(titanic7$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic7$FNLWGT)
+```
+
+```{r fnl sexta limpieza}
+titanic8 <- filter(titanic7, FNLWGT < min(boxplot.stats(FNLWGT)$out))
+boxplot(titanic8$FNLWGT, horizontal = TRUE)
+boxplot.stats(titanic8$FNLWGT)
+
+```
+
+## Outliers de NFLWGT
+```{r}
+out1 <- filter(titanic, titanic$FNLWGT > max(titanic8$FNLWGT))
+out1
+```
+
