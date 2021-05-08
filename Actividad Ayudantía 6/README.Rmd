@@ -45,8 +45,8 @@ data_pre <- na.omit(data)
 # Ahora corroboraremos si existen canciones que esten duplicadas
 data_pre %>% count(duplicated(data_pre$track_name))
 
-# Como existen canciones repetidas realizamos la consulta para obtener los valores distintos, pero este hecho obvia que hayan canciones con el mismo nombre pero de distinto autos  
-data_pre %>% distinct(track_name, .keep_all = TRUE, )
+# Como existen canciones repetidas realizamos la consulta para obtener los valores distintos, pero este hecho obvia que hayan canciones con el mismo nombre pero de distinto autores  
+#data_pre %>% distinct(track_name, .keep_all = TRUE, )
 
 # Por lo que creamos una variables que almacene si existe duplicidad en la cacion y/o en el artista
 data_pre$duplicate <- duplicated(data_pre[,c("track_name", "artist_name")])
